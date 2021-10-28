@@ -28,6 +28,7 @@
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
+from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 assert cf
@@ -39,11 +40,86 @@ los mismos.
 
 # Construccion de modelos
 
+def newCatalog():
+    """
+    Inizializa el modelo
+
+    crea una lista vacia para guardad los avistamientos y se crean mapas
+    (RBT) con los siguientes criterios:
+
+        - Ciudad de avistamiento (city)
+        - Duracion del avistamiento (duration (seconds))
+        - Hora/Minuto del avistamiento (datetime)
+        - Fecha del avistamiento (datetime)
+        - Zona geografica del avistamiento (latitude, longitude)
+
+    Retorna el analizador
+
+    """
+
+    catalog = {"Avistamientos": None,
+               "Ciudad": None,
+               "Duration": None,
+               "HoraMin": None,
+               "Fecha": None,
+               "Zona": None}
+
+    catalog["Avistamientos"] = lt.newList("ARRAY_LIST")
+    catalog["Ciudad"] = om.newMap(omaptype= "RBT")
+    catalog["Duration"] = om.newMap(omaptype= "RBT")
+    catalog["HoraMin"] = om.newMap(omaptype= "RBT")
+    catalog["Fecha"] = om.newMap(omaptype= "RBT")
+    catalog["Zona"] = om.newMap(omaptype= "RBT")
+
+    return catalog
+
 # Funciones para agregar informacion al catalogo
+
+def addAvista(catalog, avistamiento):
+    """
+    Carga los datos al catalogo
+    """
+    lt.addLast(catalog["Avistamientos"], avistamiento)
+    addCity(catalog, avistamiento)
+
+def addCity(catalog, avistamiento):
+    """
+    Anade una ciudad al mapa si no existe ya 
+    """
+    ciudades = catalog["Ciudad"]
+
+    city = avistamiento["city"]
+
+    existe = om.contains(ciudades,city)
+
+    if existe:
+        ci = om.get(ciudades, city)
+        ci = me.getValue(ci)
+
+    else:
+        ci = lt.newList("ARRAY_LIST")
+        om.put(ciudades, city, ci)
+
+    lt.addLast(ci, avistamiento)
 
 # Funciones para creacion de datos
 
+def reqUno(catalog, ciudad):
+
+    ciudades = catalog["Ciudad"]
+
+    resp = om.get(ciudades, ciudad)
+    resp = me.getValue(resp)
+
+    return resp
+
 # Funciones de consulta
+
+def Altura(catalog, mapa):
+    return om.height(catalog[mapa])
+
+def Size(catalog, mapa):
+    return om.size(catalog[mapa])
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
