@@ -52,7 +52,36 @@ catalog = None
 
 def reqUno(catalog, ciudad):
     data = controller.reqUno(catalog, ciudad)
-    print("Se registraron " + str(lt.size(data)) + " avistamientos en " + str(ciudad) + "\n")
+    size = lt.size(data)
+
+    x =PrettyTable()
+    x.field_names = (["datetime", "city", "state", "country", "shape", "duration (s)"])
+    x.max_width = 25
+    x.hrules = ALL
+
+    if size > 6:
+        for i in range(1,4):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])            
+
+        for i in range(size-2, size+1):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])
+
+    else:
+        for i in range(1, size):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])
+
+
+    print("=============== Req No. 1 Inputs ===============")
+    print("UFO sightings in the city of: " + ciudad + "\n")
+    print("=============== Req No. 1 Answer ===============")
+    print("There are " + str(controller.Size(catalog, "Ciudad")) + " different cities with UFO sightings...\n")
+    print("There are " + str(lt.size(data)) + " sightings at the: " + str(ciudad) + " city \n")
+    print("The first 3 and last 3 UFO sightings int he city are: \n")
+    print(x)
+    
 
 """
 Menu principal
@@ -62,15 +91,14 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos .... \n")
-
+        t1 = process_time()
         catalog = controller.init()
         controller.loadData(catalog)
+        t2 = process_time()
         print("Avistamientos cargados: " + str(lt.size(catalog["Avistamientos"])) + "\n")
-
+        print("Time = " + str(t2-t1) + "seg \n")
+        
     elif int(inputs[0]) == 2:
-        print("Altura de arbol por ciudad: " + str(controller.Altura(catalog, "Ciudad")) + "\n")
-        print("Numero de ciudades en el arbol: " + str(controller.Size(catalog, "Ciudad")) + "\n")
-
         ciudad = input("Ciudad en la que quiere consultar avistamientos: \n >")
         t1 = process_time()
         reqUno(catalog, ciudad)

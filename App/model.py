@@ -26,11 +26,12 @@
 
 
 import config as cf
+from datetime import datetime
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
-from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import mergesort as merge
 assert cf
 
 """
@@ -110,6 +111,7 @@ def reqUno(catalog, ciudad):
 
     resp = om.get(ciudades, ciudad)
     resp = me.getValue(resp)
+    resp = merge.sort(resp, cmpcronologico)
 
     return resp
 
@@ -124,3 +126,9 @@ def Size(catalog, mapa):
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
+
+def cmpcronologico(avista1, avista2):
+    d1 = datetime.strptime(avista1["datetime"], '%Y-%m-%d %H:%M:%S')
+    d2 = datetime.strptime(avista2["datetime"], '%Y-%m-%d %H:%M:%S')
+    return (d1<d2)
+
