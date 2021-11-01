@@ -44,7 +44,7 @@ def loadData(catalog):
     Carga los archivos del CSV en el modelo
     """
 
-    avistamientos = cf.data_dir + "UFOS/UFOS-utf8-large.csv"
+    avistamientos = cf.data_dir + "UFOS/UFOS-utf8-small.csv"
     input_file = csv.DictReader(open(avistamientos, encoding = "utf-8"))
 
     for avistamiento in input_file:
@@ -56,17 +56,18 @@ def reqUno(catalog, ciudad):
     """
     return model.reqUno(catalog, ciudad)
 
-def duaraMax(catalog):
-    """
-    Primera parte requerimiento 2
-    """
-    return model.duaraMax(catalog)
 
 def reqDos(catalog, inferior, superior):
     """
     Segunda parte requerimiento 2
     """
     return model.reqDos(catalog, inferior, superior)
+
+def reqCuatro(catalog, inferior, superior):
+    """
+    Segunda parte requerimiento 4
+    """
+    return model.reqCuatro(catalog, inferior, superior)
 
 # Funciones de ordenamiento
 
@@ -77,3 +78,9 @@ def Altura(catalog, mapa):
 
 def Size(catalog, mapa):
     return model.Size(catalog, mapa)
+
+def Max(catalog, mapa):
+    return model.Max(catalog, mapa)
+
+def Min(catalog, mapa):
+    return model.Min(catalog, mapa)

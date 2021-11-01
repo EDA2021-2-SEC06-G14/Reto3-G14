@@ -22,6 +22,7 @@
 
 import config as cf
 import sys
+from datetime import datetime
 import controller
 from DISClib.ADT import list as lt
 assert cf
@@ -83,7 +84,7 @@ def reqUno(catalog, ciudad):
     print(x)
  
 def reqDos(catalog, inferior, superior):
-    duramax = controller.duaraMax(catalog)
+    duramax = controller.Max(catalog, "Duration")
     data = controller.reqDos(catalog, inferior, superior)
     size = lt.size(data)
 
@@ -123,6 +124,45 @@ def reqDos(catalog, inferior, superior):
     print(x)
 
 
+def reqCuatro(catalog, inferior, superior):
+    data = controller.reqCuatro(catalog, inferior, superior)
+    size = lt.size(data)
+    datemin = controller.Min(catalog, "Fecha") 
+
+    x =PrettyTable()
+    x.field_names = (["datetime", "city", "state", "country", "shape", "duration (s)"])
+    x.max_width = 25
+    x.hrules = ALL
+
+    if size > 6:
+        for i in range(1,4):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])            
+
+        for i in range(size-2, size+1):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])
+
+    else:
+        for i in range(1, size):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])
+
+    y = PrettyTable()
+    y.field_names = (["date", "count"])
+    y.max_width = 25
+    y.hrules = ALL
+    y.add_row([datemin[0], datemin[1]])
+
+    print("=============== Req No. 4 Inputs ===============")
+    print("UFO  sightings between " + str(inferior) + " and " + str(superior))
+    print("=============== Req No. 4 Answer ===============")
+    print("There are " + str(controller.Size(catalog, "Fecha")) + " different UFO sightings dates [YYY-MM-DD]...")
+    print("The oldest UFO sightings date is: \n")
+    print(y)
+    print("There are " + str(size) + " sightings between: " + str(inferior) + " and " + str(superior))
+    print("The first 3 and last 3 UFO sightings in this time are: \n")
+    print(x)
 
 """
 Menu principal
@@ -158,7 +198,12 @@ while True:
         print("Funcion en desarrollo")
 
     elif int(inputs[0]) == 5:
-        print("Funcion en desarrollo")
+        inferior = datetime.strptime(input("Fecha minima del avistamiento: \n >"), '%Y-%m-%d')
+        superior =  datetime.strptime(input("Fecha maxima del avistamiento: \n >"), '%Y-%m-%d')
+        t1 = process_time()
+        reqCuatro(catalog, inferior, superior)
+        t2 = process_time()
+        print("Time = " + str(t2-t1) + "seg \n")
 
     elif int(inputs[0]) == 6:
         print("Funcion en desarrollo")

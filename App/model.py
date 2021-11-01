@@ -83,6 +83,7 @@ def addAvista(catalog, avistamiento):
     lt.addLast(catalog["Avistamientos"], avistamiento)
     addCity(catalog, avistamiento)
     addDuration(catalog, avistamiento)
+    addFecha(catalog, avistamiento)
 
 def addCity(catalog, avistamiento):
     """
@@ -124,6 +125,26 @@ def addDuration(catalog, avistamiento):
 
     lt.addLast(sec, avistamiento)
 
+def addFecha(catalog, avistamiento):
+    """
+    Anade un avistamiento en cuanto a su fecha 
+    """
+    fechas = catalog["Fecha"]
+
+    fecha = datetime.strptime(avistamiento["datetime"][:10], '%Y-%m-%d')
+
+    existe = om.contains(fechas, fecha)
+
+    if existe:
+        sec = om.get(fechas, fecha)
+        sec = me.getValue(sec)
+
+    else:
+        sec = lt.newList("ARRAY_LIST")
+        om.put(fechas, fecha, sec)
+
+    lt.addLast(sec, avistamiento)
+
 # Funciones para creacion de datos
 
 def reqUno(catalog, ciudad):
@@ -135,13 +156,6 @@ def reqUno(catalog, ciudad):
     resp = merge.sort(resp, cmpcronologico)
 
     return resp
-
-def duaraMax(catalog):
-    duracion = catalog["Duration"]
-    key = om.maxKey(duracion)
-    size = lt.size(me.getValue(om.get(duracion, key)))
-
-    return [key, size]
 
 
 def reqDos(catalog, inferior, superior):
@@ -159,6 +173,21 @@ def reqDos(catalog, inferior, superior):
 
     return data
 
+def reqCuatro(catalog, inferior, superior):
+    fechas = catalog["Fecha"]
+    data = lt.newList("ARRAY_LIST")
+
+    resp = om.values(fechas, inferior, superior)
+    resp = lt.iterator(resp)
+    for i in resp:
+        re = lt.iterator(i)
+        for j in re:
+            lt.addLast(data, j)
+
+    data = merge.sort(data, cmpcronologico)
+
+    return data
+
 # Funciones de consulta
 
 def Altura(catalog, mapa):
@@ -166,6 +195,20 @@ def Altura(catalog, mapa):
 
 def Size(catalog, mapa):
     return om.size(catalog[mapa])
+
+def Max(catalog, mapa):
+    duracion = catalog[mapa]
+    key = om.maxKey(duracion)
+    size = lt.size(me.getValue(om.get(duracion, key)))
+
+    return [key, size]
+
+def Min(catalog, mapa):
+    fecha = catalog[mapa]
+    key = om.minKey(fecha)
+    size = lt.size(me.getValue(om.get(fecha, key)))
+
+    return [key, size]
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -185,3 +228,4 @@ def cmpduration(avista1, avista2):
         d2 = (avista2["country"] + avista2["city"]).replace(" ","")
 
     return (d1<d2)
+
