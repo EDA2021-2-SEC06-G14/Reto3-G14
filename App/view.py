@@ -81,7 +81,48 @@ def reqUno(catalog, ciudad):
     print("There are " + str(lt.size(data)) + " sightings at the: " + str(ciudad) + " city \n")
     print("The first 3 and last 3 UFO sightings int he city are: \n")
     print(x)
-    
+ 
+def reqDos(catalog, inferior, superior):
+    duramax = controller.duaraMax(catalog)
+    data = controller.reqDos(catalog, inferior, superior)
+    size = lt.size(data)
+
+    x =PrettyTable()
+    x.field_names = (["datetime", "city", "state", "country", "shape", "duration (s)"])
+    x.max_width = 25
+    x.hrules = ALL
+
+    if size > 6:
+        for i in range(1,4):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])            
+
+        for i in range(size-2, size+1):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])
+
+    else:
+        for i in range(1, size):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])
+
+    y = PrettyTable()
+    y.field_names = (["duration (seconds)", "count"])
+    y.max_width = 25
+    y.hrules = ALL
+    y.add_row([duramax[0], duramax[1]])
+
+    print("=============== Req No. 2 Inputs ===============")
+    print("UFO sightings between " + str(inferior) + " and " + str(superior) + "\n")
+    print("=============== Req No. 2 Answer ===============")
+    print("There are " + str(controller.Size(catalog, "Duration")) + " different UFO sightings durations...")
+    print("The longest UFO sightings are: \n")
+    print(y)
+    print("There are " + str(size) + " sightings between: " + str(inferior) + " and " + str(superior) + " duration")
+    print("The first 3 and last 3 UFO sightings in the duration time are: \n")
+    print(x)
+
+
 
 """
 Menu principal
@@ -106,7 +147,12 @@ while True:
         print("Time = " + str(t2-t1) + "seg \n")
 
     elif int(inputs[0]) == 3:
-        print("Funcion en desarrollo")
+        inferior = float(input("Duracion minima del avistamieto: \n >"))
+        superior = float(input("Duracion macima del avistamiento: \n >"))
+        t1 = process_time()
+        reqDos(catalog, inferior, superior)
+        t2 = process_time()
+        print("Time = " + str(t2-t1) + "seg \n")
 
     elif int(inputs[0]) == 4:
         print("Funcion en desarrollo")

@@ -55,6 +55,19 @@ def reqUno(catalog, ciudad):
     Requerimiento 1
     """
     return model.reqUno(catalog, ciudad)
+
+def duaraMax(catalog):
+    """
+    Primera parte requerimiento 2
+    """
+    return model.duaraMax(catalog)
+
+def reqDos(catalog, inferior, superior):
+    """
+    Segunda parte requerimiento 2
+    """
+    return model.reqDos(catalog, inferior, superior)
+
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo

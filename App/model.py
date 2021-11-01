@@ -82,6 +82,7 @@ def addAvista(catalog, avistamiento):
     """
     lt.addLast(catalog["Avistamientos"], avistamiento)
     addCity(catalog, avistamiento)
+    addDuration(catalog, avistamiento)
 
 def addCity(catalog, avistamiento):
     """
@@ -103,6 +104,26 @@ def addCity(catalog, avistamiento):
 
     lt.addLast(ci, avistamiento)
 
+def addDuration(catalog, avistamiento):
+    """
+    Anade un avistamiento en cuanto a su duracion 
+    """
+    Duration = catalog["Duration"]
+
+    Dura = float(avistamiento["duration (seconds)"])
+
+    existe = om.contains(Duration, Dura)
+
+    if existe:
+        sec = om.get(Duration, Dura)
+        sec = me.getValue(sec)
+
+    else:
+        sec = lt.newList("ARRAY_LIST")
+        om.put(Duration, Dura, sec)
+
+    lt.addLast(sec, avistamiento)
+
 # Funciones para creacion de datos
 
 def reqUno(catalog, ciudad):
@@ -114,6 +135,29 @@ def reqUno(catalog, ciudad):
     resp = merge.sort(resp, cmpcronologico)
 
     return resp
+
+def duaraMax(catalog):
+    duracion = catalog["Duration"]
+    key = om.maxKey(duracion)
+    size = lt.size(me.getValue(om.get(duracion, key)))
+
+    return [key, size]
+
+
+def reqDos(catalog, inferior, superior):
+    duracion = catalog["Duration"]
+    data = lt.newList("ARRAY_LIST")
+
+    resp = om.values(duracion, inferior, superior)
+    resp = lt.iterator(resp)
+    for i in resp:
+        re = lt.iterator(i)
+        for j in re:
+            lt.addLast(data, j)
+
+    data = merge.sort(data, cmpduration)
+
+    return data
 
 # Funciones de consulta
 
@@ -132,3 +176,12 @@ def cmpcronologico(avista1, avista2):
     d2 = datetime.strptime(avista2["datetime"], '%Y-%m-%d %H:%M:%S')
     return (d1<d2)
 
+def cmpduration(avista1, avista2):
+    d1 = float(avista1["duration (seconds)"])
+    d2 = float(avista2["duration (seconds)"])
+
+    if d1==d2:
+        d1 = (avista1["country"] + avista1["city"]).replace(" ","")
+        d2 = (avista2["country"] + avista2["city"]).replace(" ","")
+
+    return (d1<d2)
