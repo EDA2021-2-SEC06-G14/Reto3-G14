@@ -70,6 +70,8 @@ def newCatalog():
     catalog["Duration"] = om.newMap(omaptype= "RBT")
     catalog["HoraMin"] = om.newMap(omaptype= "RBT")
     catalog["Fecha"] = om.newMap(omaptype= "RBT")
+    catalog["Hora"] = om.newMap(omaptype= "RBT")
+
     catalog["Zona"] = om.newMap(omaptype= "RBT")
 
     return catalog
@@ -84,6 +86,7 @@ def addAvista(catalog, avistamiento):
     addCity(catalog, avistamiento)
     addDuration(catalog, avistamiento)
     addFecha(catalog, avistamiento)
+    addHora(catalog, avistamiento)
 
 def addCity(catalog, avistamiento):
     """
@@ -145,6 +148,26 @@ def addFecha(catalog, avistamiento):
 
     lt.addLast(sec, avistamiento)
 
+def addHora(catalog, avistamiento):
+    """
+    Anade un avistamiento en cuanto a su fecha 
+    """
+    horas = catalog["Hora"]
+
+    hora = datetime.strptime(avistamiento["datetime"][11:], '%H:%M:%S')
+
+    existe = om.contains(horas, hora)
+
+    if existe:
+        sec = om.get(horas, hora)
+        sec = me.getValue(sec)
+
+    else:
+        sec = lt.newList("ARRAY_LIST")
+        om.put(horas, hora, sec)
+
+    lt.addLast(sec, avistamiento)
+
 # Funciones para creacion de datos
 
 def reqUno(catalog, ciudad):
@@ -172,6 +195,30 @@ def reqDos(catalog, inferior, superior):
     data = merge.sort(data, cmpduration)
 
     return data
+
+def reqTres(catalog, inferior, superior):
+    horas = catalog["Hora"]
+    primerprint=om.size(horas)
+    rta = lt.newList("ARRAY_LIST")
+    rtamin=lt.newList("ARRAY_LIST")
+    #inf=inferior+":00"
+    #sup=superior+":00"
+    resp = om.values(horas, inferior, superior)
+    resp = lt.iterator(resp)
+    minimo= om.maxKey(horas)
+    minimos= om.get(horas, minimo)
+    conteo= me.getValue(minimos)
+    conteoo=lt.size(conteo)
+    elemento={"time":minimo, "conteo":conteoo}
+    lt.addLast(rtamin, elemento)
+    for i in resp:
+        re = lt.iterator(i)
+        for j in re:
+            lt.addLast(rta, j)
+
+    rta = merge.sort(rta, cmpcronolotemp)
+    return rta, rtamin,primerprint
+
 
 def reqCuatro(catalog, inferior, superior):
     fechas = catalog["Fecha"]
@@ -218,6 +265,16 @@ def cmpcronologico(avista1, avista2):
     d1 = datetime.strptime(avista1["datetime"], '%Y-%m-%d %H:%M:%S')
     d2 = datetime.strptime(avista2["datetime"], '%Y-%m-%d %H:%M:%S')
     return (d1<d2)
+
+def cmpcronolotemp(avista1, avista2):
+    d1 = datetime.strptime(avista1["datetime"][11:], '%H:%M:%S')
+    d2 = datetime.strptime(avista2["datetime"][11:], '%H:%M:%S')
+    if d1==d2:
+        d3 = datetime.strptime(avista1["datetime"], '%Y-%m-%d %H:%M:%S')
+        d4 = datetime.strptime(avista2["datetime"], '%Y-%m-%d %H:%M:%S')
+        return (d3<d4) 
+    else:
+        return (d1<d2)
 
 def cmpduration(avista1, avista2):
     d1 = float(avista1["duration (seconds)"])

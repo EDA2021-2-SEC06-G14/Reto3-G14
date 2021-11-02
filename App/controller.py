@@ -63,6 +63,12 @@ def reqDos(catalog, inferior, superior):
     """
     return model.reqDos(catalog, inferior, superior)
 
+def reqTres(catalog, inferior, superior):
+    """
+    Requerimiento 3
+    """
+    return model.reqTres(catalog, inferior, superior)
+
 def reqCuatro(catalog, inferior, superior):
     """
     Segunda parte requerimiento 4

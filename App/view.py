@@ -123,6 +123,46 @@ def reqDos(catalog, inferior, superior):
     print("The first 3 and last 3 UFO sightings in the duration time are: \n")
     print(x)
 
+def reqTres(catalog, inferior, superior):
+    data,conteo,primerprint = controller.reqTres(catalog, inferior, superior)
+    size = lt.size(data) 
+    y = PrettyTable()
+    y.field_names = (["time", "count"])
+    y.max_width = 25
+    y.hrules = ALL
+    coso= lt.getElement(conteo,1)
+    y.add_row([str(coso["time"])[11:], coso["conteo"]])
+
+    x =PrettyTable()
+    x.field_names = (["datetime", "time", "city", "state", "country", "shape", "duration (s)"])
+    x.max_width = 25
+    x.hrules = ALL
+
+    if size > 6:
+        for i in range(1,4):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"],avista["datetime"][11:], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])            
+
+        for i in range(size-2, size+1):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"],avista["datetime"][11:], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])
+
+    else:
+        for i in range(1, size):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"],avista["datetime"][11:], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])
+
+    
+
+    print("=============== Req No. 3 Inputs ===============")
+    print("UFO  sightings between " + str(inferior)[11:] + " and " + str(superior)[11:])
+    print("=============== Req No. 3 Answer ===============")
+    print("There are " + str(primerprint) + " UFO sightings with  different times [hh:mm:ss]...")
+    print("The latest UFO sightings time is: \n")
+    print(y)
+    print("There are " + str(size) + " sightings between: " + str(inferior)[11:] + " and " + str(superior)[11:])
+    print("The first 3 and last 3 UFO sightings in this time are: \n")
+    print(x)
 
 def reqCuatro(catalog, inferior, superior):
     data = controller.reqCuatro(catalog, inferior, superior)
@@ -195,7 +235,14 @@ while True:
         print("Time = " + str(t2-t1) + "seg \n")
 
     elif int(inputs[0]) == 4:
-        print("Funcion en desarrollo")
+        inf=input("Hora minima del avistamiento: \n >")
+        sup=input("Hora maxima del avistamiento: \n >")
+        inferior = datetime.strptime(inf+":00", '%H:%M:%S')
+        superior =  datetime.strptime(sup+":00", '%H:%M:%S')
+        t1 = process_time()
+        reqTres(catalog, inferior, superior)
+        t2 = process_time()
+        print("Time = " + str(t2-t1) + "seg \n")
 
     elif int(inputs[0]) == 5:
         inferior = datetime.strptime(input("Fecha minima del avistamiento: \n >"), '%Y-%m-%d')
