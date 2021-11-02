@@ -75,6 +75,12 @@ def reqCuatro(catalog, inferior, superior):
     """
     return model.reqCuatro(catalog, inferior, superior)
 
+def reqCinco(catalog, loninferior, lonsuperior, latinferior, latsuperior):
+    """
+    Requerimiento 5
+    """
+    return model.reqCin(catalog, loninferior, lonsuperior, latinferior, latsuperior)
+
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo

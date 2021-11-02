@@ -72,7 +72,7 @@ def newCatalog():
     catalog["Fecha"] = om.newMap(omaptype= "RBT")
     catalog["Hora"] = om.newMap(omaptype= "RBT")
 
-    catalog["Zona"] = om.newMap(omaptype= "RBT")
+    catalog["Longitud"] = om.newMap(omaptype= "RBT")
 
     return catalog
 
@@ -87,6 +87,7 @@ def addAvista(catalog, avistamiento):
     addDuration(catalog, avistamiento)
     addFecha(catalog, avistamiento)
     addHora(catalog, avistamiento)
+    addLongitud(catalog, avistamiento)
 
 def addCity(catalog, avistamiento):
     """
@@ -107,6 +108,39 @@ def addCity(catalog, avistamiento):
         om.put(ciudades, city, ci)
 
     lt.addLast(ci, avistamiento)
+
+def addLongitud(catalog, avistamiento):
+    """
+    Anade una longitud al mapa si no existe ya 
+    """
+    longitudes = catalog["Longitud"]
+
+    longitud = float(avistamiento["longitude"])
+    latitud = float(avistamiento["latitude"])
+
+    existe = om.contains(longitudes,longitud)
+
+    if existe:
+        lon = om.get(longitudes, longitud)
+        lon = me.getValue(lon)
+        existex2=om.contains(lon,latitud)
+        if existex2:
+            lat = om.get(lon,latitud)
+            lat = me.getValue(lat)
+        else:
+            lat=lt.newList("ARRAY_LIST")
+            om.put(lon,latitud,lat)
+
+        lt.addLast(lat,avistamiento)
+
+    else:
+        lon = om.newMap(omaptype= "RBT")
+        lat=lt.newList("ARRAY_LIST")
+        lt.addLast(lat,avistamiento)
+        om.put(lon, latitud,lat)
+        om.put(longitudes, longitud, lon)
+
+    #lt.addLast(ci, avistamiento)
 
 def addDuration(catalog, avistamiento):
     """
@@ -150,7 +184,7 @@ def addFecha(catalog, avistamiento):
 
 def addHora(catalog, avistamiento):
     """
-    Anade un avistamiento en cuanto a su fecha 
+    Anade un avistamiento en cuanto a su hora 
     """
     horas = catalog["Hora"]
 
@@ -235,6 +269,25 @@ def reqCuatro(catalog, inferior, superior):
 
     return data
 
+
+def reqCin(catalog, loninferior, lonsuperior,latinferior,latsuperior):
+    longitudes = catalog["Longitud"]
+    rta = lt.newList("ARRAY_LIST")
+
+    resp = om.values(longitudes, loninferior, lonsuperior)
+    resp = lt.iterator(resp)
+    for i in resp:
+        respuesta= om.values(i,latinferior,latsuperior)
+        respuesta = lt.iterator(respuesta)
+        for j in respuesta:
+            re = lt.iterator(j)
+            for k in re:
+                lt.addLast(rta,k)
+
+    rta = merge.sort(rta, cmplatitud)
+    return rta
+
+
 # Funciones de consulta
 
 def Altura(catalog, mapa):
@@ -286,3 +339,12 @@ def cmpduration(avista1, avista2):
 
     return (d1<d2)
 
+def cmplatitud(avista1, avista2):
+    l1 = float(avista1["latitude"])
+    l2 = float(avista2["latitude"])
+    if l1==l2:
+        lo1 = float(avista1["longitude"])
+        lo2 = float(avista2["longitude"])
+        return (lo1<lo2)
+    else:
+        return (l1<l2)

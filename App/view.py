@@ -103,7 +103,7 @@ def reqDos(catalog, inferior, superior):
             x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])
 
     else:
-        for i in range(1, size):
+        for i in range(1, size+1):
             avista = lt.getElement(data,i)
             x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])
 
@@ -148,7 +148,7 @@ def reqTres(catalog, inferior, superior):
             x.add_row([avista["datetime"],avista["datetime"][11:], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])
 
     else:
-        for i in range(1, size):
+        for i in range(1, size+1):
             avista = lt.getElement(data,i)
             x.add_row([avista["datetime"],avista["datetime"][11:], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])
 
@@ -184,7 +184,7 @@ def reqCuatro(catalog, inferior, superior):
             x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])
 
     else:
-        for i in range(1, size):
+        for i in range(1, size+1):
             avista = lt.getElement(data,i)
             x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"]])
 
@@ -202,6 +202,39 @@ def reqCuatro(catalog, inferior, superior):
     print(y)
     print("There are " + str(size) + " sightings between: " + str(inferior) + " and " + str(superior))
     print("The first 3 and last 3 UFO sightings in this time are: \n")
+    print(x)
+
+
+def reqCinco(catalog, loninferior, lonsuperior, latinferior, latsuperior):
+    data = controller.reqCinco(catalog, loninferior, lonsuperior, latinferior, latsuperior)
+    size = lt.size(data)
+    #datemin = controller.Min(catalog, "Fecha") 
+
+    x =PrettyTable()
+    x.field_names = (["datetime", "city", "state", "country", "shape", "duration (s)", "latitude", "longitude"])
+    x.max_width = 25
+    x.hrules = ALL
+
+    if size > 10:
+        for i in range(1,6):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"], avista["latitude"], avista["longitude"]])            
+
+        for i in range(size-4, size+1):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"], avista["latitude"], avista["longitude"]])
+
+    else:
+        for i in range(1, size+1):
+            avista = lt.getElement(data,i)
+            x.add_row([avista["datetime"], avista["city"], avista["state"], avista["country"], avista["shape"], avista["duration (seconds)"], avista["latitude"], avista["longitude"]])
+
+    print("=============== Req No. 5 Inputs ===============")
+    print("UFO  sightings between latitude range of" + str(latinferior) + " and " + str(latsuperior))
+    print("plus longitude range of" + str(loninferior) + " and " + str(lonsuperior))
+    print("=============== Req No. 5 Answer ===============")
+    print("There are " + str(size) + " different UFO sightings in the current area")
+    print("The first 5 and the last 5 UFO sightings in this area are: \n")
     print(x)
 
 """
@@ -253,7 +286,14 @@ while True:
         print("Time = " + str(t2-t1) + "seg \n")
 
     elif int(inputs[0]) == 6:
-        print("Funcion en desarrollo")
+        latinferior = float(input("Latitud minima del avistamiento: \n >"))
+        latsuperior = float(input("Latitud maxima del avistamiento: \n >"))
+        loninferior = float(input("Longitud minima del avistamiento: \n >"))
+        lonsuperior = float(input("Longitud maxima del avistamiento: \n >"))
+        t1 = process_time()
+        reqCinco(catalog, loninferior, lonsuperior, latinferior, latsuperior)
+        t2 = process_time()
+        print("Time = " + str(t2-t1) + "seg \n")
 
     elif int(inputs[0]) == 7:
         print("Funcion en desarrollo")
