@@ -26,6 +26,7 @@
 
 
 import config as cf
+import folium
 from datetime import datetime
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -63,7 +64,8 @@ def newCatalog():
                "Duration": None,
                "HoraMin": None,
                "Fecha": None,
-               "Zona": None}
+               "Zona": None,
+               "Longitud": None}
 
     catalog["Avistamientos"] = lt.newList("ARRAY_LIST")
     catalog["Ciudad"] = om.newMap(omaptype= "RBT")
@@ -71,7 +73,6 @@ def newCatalog():
     catalog["HoraMin"] = om.newMap(omaptype= "RBT")
     catalog["Fecha"] = om.newMap(omaptype= "RBT")
     catalog["Hora"] = om.newMap(omaptype= "RBT")
-
     catalog["Longitud"] = om.newMap(omaptype= "RBT")
 
     return catalog
@@ -287,7 +288,34 @@ def reqCin(catalog, loninferior, lonsuperior,latinferior,latsuperior):
     rta = merge.sort(rta, cmplatitud)
     return rta
 
+def reqSeis(catalog, loninferior, lonsuperior, latinferior, latsuperior):
+    avista = reqCin(catalog, loninferior, lonsuperior,latinferior,latsuperior)
 
+    avistamientos = lt.iterator(avista)
+ 
+    m = folium.Map(location=[(latinferior+latsuperior)/2, (loninferior+lonsuperior)/2], tiles="Stamen Terrain", zoom_start=7)
+
+    for i in avistamientos:
+
+        latitud = i["latitude"]
+        longitud = i["longitude"]
+
+
+        iframe = folium.IFrame("Duracion: " + str(i["duration (seconds)"]) + "\n"+ 
+                            "Fecha: " + str(i["datetime"]) + "\n"
+                            "Forma: " + str(i["shape"]))
+        popup = folium.Popup(iframe,
+                     min_width=150,
+                     max_width=150)
+
+        folium.Marker(location=[latitud, longitud],
+                      popup=popup,
+                      icon=folium.Icon(color="blue")
+        ).add_to(m)
+
+    m.save("mapa_avistamientos.html")
+
+    return avista
 # Funciones de consulta
 
 def Altura(catalog, mapa):

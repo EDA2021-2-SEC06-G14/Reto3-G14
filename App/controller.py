@@ -44,7 +44,7 @@ def loadData(catalog):
     Carga los archivos del CSV en el modelo
     """
 
-    avistamientos = cf.data_dir + "UFOS/UFOS-utf8-small.csv"
+    avistamientos = cf.data_dir + "UFOS/UFOS-utf8-large.csv"
     input_file = csv.DictReader(open(avistamientos, encoding = "utf-8"))
 
     for avistamiento in input_file:
@@ -80,6 +80,12 @@ def reqCinco(catalog, loninferior, lonsuperior, latinferior, latsuperior):
     Requerimiento 5
     """
     return model.reqCin(catalog, loninferior, lonsuperior, latinferior, latsuperior)
+
+def reqSeis(catalog, loninferior, lonsuperior, latinferior, latsuperior):
+    """
+    Requerimineto 6
+    """
+    return model.reqSeis(catalog, loninferior, lonsuperior, latinferior, latsuperior)
 
 # Funciones de ordenamiento
 
