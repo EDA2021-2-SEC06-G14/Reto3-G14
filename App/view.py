@@ -269,6 +269,8 @@ def reqSeis(catalog, loninferior, lonsuperior, latinferior, latsuperior):
     print("There are " + str(size) + " different UFO sightings in the current area")
     print("The first 5 and the last 5 UFO sightings in this area are: \n")
     print(x)
+    print("\n Para visualizar el mapa por favor abrir el archivo llamado mapa_avistamientos.html en la carpeta del reto")
+
 
 """
 Menu principal
